@@ -63,3 +63,35 @@ Import the ready-to-run workflow (**Weekly 6-ATS Hiring Velocity, Salary & JD Te
 - [Ashby Job Board, Salary & Tech Stack Scraper](https://apify.com/spiky_closet/ats-jobs-hiring-intel/examples/ashby-job-board-salary-scraper)
 - [Greenhouse Careers, Salary & Hiring Signal Scraper](https://apify.com/spiky_closet/ats-jobs-hiring-intel/examples/greenhouse-careers-hiring-scraper)
 - [Multi-ATS Company Hiring Velocity & Tech Summary](https://apify.com/spiky_closet/ats-jobs-hiring-intel/examples/multi-ats-hiring-velocity-summary)
+## Live Interactive Top-100 Benchmark (Nov 2026)
+
+Explore our live open dataset of **81 active AI, DevTools & Fintech startup ATS boards (`9,556` live open roles)** scraped in `11.85s`:
+- **Interactive Web Explorer:** https://yun87457-web.github.io/ats-jobs-hiring-intel-mcp/
+- **Open Downloads (MIT):** [`benchmarks/top-100-nov-2026.csv`](./benchmarks/top-100-nov-2026.csv) · [`benchmarks/top-100-nov-2026.json`](./benchmarks/top-100-nov-2026.json)
+- **Key Findings:** Ashby leads Greenhouse (`46` vs `31`) among modern AI/Dev startups; `74/81` (`91%`) publish USD salary bands (Anthropic `$335k` median vs OpenAI `$323k` median).
+
+## Install & Run Locally (Stdio MCP Server — Zero Dependencies)
+
+Run directly in Claude Desktop, Cursor, Windsurf, or Cline using Node.js 18+ (supports either `APIFY_TOKEN` or `RAPIDAPI_KEY`):
+
+```bash
+npx -y github:yun87457-web/ats-jobs-hiring-intel-mcp
+```
+
+```json
+{
+  "mcpServers": {
+    "ats-jobs-hiring-intel": {
+      "command": "npx",
+      "args": ["-y", "github:yun87457-web/ats-jobs-hiring-intel-mcp"],
+      "env": { "RAPIDAPI_KEY": "YOUR_FREE_RAPIDAPI_KEY" }
+    }
+  }
+}
+```
+
+## No-Code Recipes (n8n, Make.com & Clay)
+
+- **n8n Workflow JSON:** [`n8n-template.json`](./n8n-template.json) (and community node scaffold in [`n8n-community-node/`](./n8n-community-node/))
+- **Clay HTTP Enrichment:** [`integrations/clay-http-enrichment.json`](./integrations/clay-http-enrichment.json)
+- **Make.com HTTP Module:** [`integrations/make-http-module.json`](./integrations/make-http-module.json)

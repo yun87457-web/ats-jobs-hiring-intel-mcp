@@ -1,0 +1,21 @@
+{
+  "name": "RoleSignal \u2014 Screen Account Hiring Velocity & Salaries",
+  "module": "http:ActionSendData",
+  "url": "https://unified-multi-ats-jobs-salary-hiring-intelligence.p.rapidapi.com/screen",
+  "method": "POST",
+  "headers": [
+    {
+      "name": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "name": "x-rapidapi-key",
+      "value": "{{YOUR_RAPIDAPI_KEY}}"
+    },
+    {
+      "name": "x-rapidapi-host",
+      "value": "unified-multi-ats-jobs-salary-hiring-intelligence.p.rapidapi.com"
+    }
+  ],
+  "body": "{\"companies\": [\"{{1.domain}}\"]}"
+}

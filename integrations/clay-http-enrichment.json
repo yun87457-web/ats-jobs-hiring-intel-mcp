@@ -1,0 +1,23 @@
+{
+  "provider": "RoleSignal Unified 6-ATS Jobs & Hiring API",
+  "method": "POST",
+  "endpoint": "https://unified-multi-ats-jobs-salary-hiring-intelligence.p.rapidapi.com/screen",
+  "headers": {
+    "Content-Type": "application/json",
+    "x-rapidapi-key": "{{YOUR_RAPIDAPI_KEY}}",
+    "x-rapidapi-host": "unified-multi-ats-jobs-salary-hiring-intelligence.p.rapidapi.com"
+  },
+  "body": {
+    "companies": [
+      "{{Domain}}"
+    ]
+  },
+  "extract_fields": [
+    "ats",
+    "totalOpenJobs",
+    "remoteSharePct",
+    "medianSalaryMidUsd",
+    "isHiringAi",
+    "topTechNames"
+  ]
+}
