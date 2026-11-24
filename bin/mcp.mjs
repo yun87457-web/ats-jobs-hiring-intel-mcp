@@ -12,69 +12,196 @@
 import readline from "node:readline";
 
 const SERVER_NAME = "rolesignal-ats-jobs-intel-mcp";
-const SERVER_VERSION = "1.1.0";
-const APIFY_MCP_URL = "https://spiky-closet--ats-jobs-hiring-intel.apify.actor/mcp";
+const SERVER_VERSION = "1.1.1";
+const APIFY_MCP_URL = process.env.MCP_ENDPOINT_OVERRIDE || "https://spiky-closet--ats-jobs-hiring-intel.apify.actor/mcp";
 const APIFY_URL = "https://apify.com/spiky_closet/ats-jobs-hiring-intel";
 const RAPIDAPI_URL = "https://rapidapi.com/HYunLe/api/unified-multi-ats-jobs-salary-hiring-intelligence";
 const RAPIDAPI_HOST = "unified-multi-ats-jobs-salary-hiring-intelligence.p.rapidapi.com";
+const REST_BASE_URL = process.env.REST_BASE_OVERRIDE || `https://${RAPIDAPI_HOST}`;
 const TOOLS = [
   {
-    "name": "screen_hiring_signals",
-    "description": "Auto-detect ATS platform and return 1-row-per-company hiring velocity, USD salary bands, remote share, and JD tech stack signals.",
+    "description": "Fetch live normalized job postings across 6 ATS platforms (Ashby, Greenhouse, Lever, SmartRecruiters, Workday, BambooHR) from company domains, work emails, career URLs, or ATS slugs. Extracts normalized annual USD salaries, equity signals, workplace type, seniority, department, and 80+ JD tech-stack signals.",
     "inputSchema": {
-      "type": "object",
       "properties": {
         "companies": {
-          "type": "array",
+          "description": "Company domains, work emails, career URLs, or ATS slugs (e.g. ['ramp.com', 'stripe.com', 'workday:nvidia:wd5:NVIDIAExternalCareerSite']).",
           "items": {
             "type": "string"
           },
-          "description": "Company domains, emails, or ATS slugs (e.g. ['ramp.com', 'linear.app'])"
-        }
-      },
-      "required": [
-        "companies"
-      ]
-    },
-    "rapidapi": {
-      "method": "POST",
-      "path": "/screen"
-    }
-  },
-  {
-    "name": "search_ats_jobs",
-    "description": "Extract normalized open job postings with parsed USD salaries, equity flags, and workplace types across 6 ATS platforms.",
-    "inputSchema": {
-      "type": "object",
-      "properties": {
-        "companies": {
-          "type": "array",
+          "type": "array"
+        },
+        "company": {
+          "description": "Single company convenience field.",
+          "type": "string"
+        },
+        "departments": {
+          "description": "Filter by department (e.g. ['Engineering', 'Sales']).",
           "items": {
             "type": "string"
-          }
+          },
+          "type": "array"
+        },
+        "excludeKeywords": {
+          "description": "Exclude jobs matching ANY keyword.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "includeDescriptionText": {
+          "default": false,
+          "description": "Include plain-text job description excerpt.",
+          "type": "boolean"
         },
         "keywords": {
-          "type": "array",
+          "description": "Keep jobs matching ANY keyword (title, department, location, JD).",
           "items": {
             "type": "string"
-          }
+          },
+          "type": "array"
+        },
+        "locations": {
+          "description": "Filter by location substring (e.g. ['New York', 'London']).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "maxJobsPerCompany": {
+          "default": 0,
+          "description": "Max jobs per company (0 = unlimited).",
+          "type": "integer"
+        },
+        "maxResults": {
+          "default": 25,
+          "description": "Hard cap on total returned jobs (default 25 for MCP).",
+          "type": "integer"
+        },
+        "minSalaryUsd": {
+          "default": 0,
+          "description": "Minimum annualized USD salary floor.",
+          "type": "integer"
+        },
+        "mustMentionTech": {
+          "description": "Keep jobs mentioning ANY listed tech in JD (e.g. ['Python', 'Kubernetes', 'PyTorch']).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "postedWithinDays": {
+          "default": 0,
+          "description": "Keep only jobs published within the last N days (0 = disabled; excludes jobs with missing/unparseable publishedAt when > 0).",
+          "type": "integer"
         },
         "remoteOnly": {
-          "type": "boolean",
-          "default": false
+          "default": false,
+          "description": "Return only remote roles.",
+          "type": "boolean"
         },
-        "maxPerCompany": {
-          "type": "integer",
-          "default": 20
+        "titleKeywords": {
+          "description": "Keep jobs whose title matches ANY keyword (case-insensitive substring match against title only).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         }
       },
-      "required": [
-        "companies"
-      ]
+      "type": "object"
     },
+    "name": "get_company_jobs",
     "rapidapi": {
       "method": "POST",
       "path": "/jobs"
+    }
+  },
+  {
+    "description": "Auto-detect which ATS platform (Ashby, Greenhouse, Lever, SmartRecruiters, Workday, BambooHR), board slug, and public job board URL a company domain, work email, or career page uses.",
+    "inputSchema": {
+      "properties": {
+        "company": {
+          "description": "Company domain, work email, career URL, or ATS slug (e.g. 'ramp.com' or 'ceo@stripe.com').",
+          "type": "string"
+        }
+      },
+      "required": [
+        "company"
+      ],
+      "type": "object"
+    },
+    "name": "detect_company_ats",
+    "rapidapi": {
+      "method": "GET",
+      "path": "/detect"
+    }
+  },
+  {
+    "description": "Generate 1-row-per-company B2B hiring-signal summaries for 1-50 companies: total open roles, remote share %, department/seniority breakdown, median annualized USD salary, top JD tech stack, and executive/AI/sales/security hiring flags.",
+    "inputSchema": {
+      "properties": {
+        "companies": {
+          "description": "Company domains, work emails, career URLs, or ATS slugs.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "company": {
+          "description": "Single company convenience field.",
+          "type": "string"
+        },
+        "departments": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "keywords": {
+          "description": "Optional role keywords to measure matchedJobs alongside totalOpenJobs.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "locations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "minSalaryUsd": {
+          "default": 0,
+          "type": "integer"
+        },
+        "mustMentionTech": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "postedWithinDays": {
+          "default": 0,
+          "description": "Optional freshness window in days for matchedJobs.",
+          "type": "integer"
+        },
+        "remoteOnly": {
+          "default": false,
+          "type": "boolean"
+        },
+        "titleKeywords": {
+          "description": "Optional title-only keywords to measure matchedJobs.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "name": "screen_hiring_signals",
+    "rapidapi": {
+      "method": "POST",
+      "path": "/screen"
     }
   }
 ];
@@ -113,7 +240,7 @@ async function proxyApifyMcp(payload, token) {
 
 async function callRapidApi(tool, args, key) {
   const cfg = tool.rapidapi;
-  let url = `https://${RAPIDAPI_HOST}${cfg.path}`;
+  let url = `${REST_BASE_URL}${cfg.path}`;
   const headers = {
     "x-rapidapi-key": key,
     "x-rapidapi-host": RAPIDAPI_HOST
