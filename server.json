@@ -4,7 +4,7 @@
   "title": "Unified 6-ATS Jobs, Salary & Hiring Intelligence MCP Server",
   "description": "6-ATS Go MCP (Ashby/Greenhouse/Lever/Workday/SmartRecruiters/BambooHR): salary & JD tech signals.",
   "repository": {
-    "url": "https://github.com/yun87457-web/adpulse-mcp-servers",
+    "url": "https://github.com/yun87457-web/ats-jobs-hiring-intel-mcp",
     "source": "github"
   },
   "version": "1.1.0",
