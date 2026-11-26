@@ -30,5 +30,6 @@
     "type": "git",
     "url": "https://github.com/yun87457-web/ats-jobs-hiring-intel-mcp.git"
   },
-  "homepage": "https://yun87457-web.github.io/ats-jobs-hiring-intel-mcp/"
+  "homepage": "https://yun87457-web.github.io/ats-jobs-hiring-intel-mcp/",
+  "mcpName": "io.github.yun87457-web/ats-jobs-hiring-intel-mcp"
 }
