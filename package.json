@@ -5,7 +5,8 @@
   "type": "module",
   "license": "MIT",
   "bin": {
-    "ats-jobs-hiring-intel-mcp": "./bin/mcp.mjs"
+    "ats-jobs-hiring-intel-mcp": "bin/mcp.mjs",
+    "rolesignal-ats-jobs-intel-mcp": "bin/mcp.mjs"
   },
   "files": [
     "bin/",
@@ -28,8 +29,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yun87457-web/ats-jobs-hiring-intel-mcp.git"
+    "url": "git+https://github.com/yun87457-web/ats-jobs-hiring-intel-mcp.git"
   },
   "homepage": "https://yun87457-web.github.io/ats-jobs-hiring-intel-mcp/",
   "mcpName": "io.github.yun87457-web/ats-jobs-hiring-intel-mcp"
 }
+
