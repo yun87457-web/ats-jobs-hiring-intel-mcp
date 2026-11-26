@@ -2,6 +2,7 @@
 
 # Unified 6-ATS Jobs, Salary & Hiring Intelligence — REST API & MCP Server
 
+[![yun87457-web/ats-jobs-hiring-intel-mcp MCP server](https://glama.ai/mcp/servers/yun87457-web/ats-jobs-hiring-intel-mcp/badges/score.svg)](https://glama.ai/mcp/servers/yun87457-web/ats-jobs-hiring-intel-mcp)
 [![Unified 6-ATS Jobs & Hiring Intel MCP connector](https://glama.ai/mcp/connectors/io.github.yun87457-web/ats-jobs-hiring-intel-mcp/badges/score.svg)](https://glama.ai/mcp/connectors/io.github.yun87457-web/ats-jobs-hiring-intel-mcp)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/yun87457-web/ats-jobs-hiring-intel-mcp)
 
