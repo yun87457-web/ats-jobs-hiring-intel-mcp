@@ -8,9 +8,10 @@
 
 Extract normalized job postings, parsed USD salary & equity ranges, workplace types (`remote`, `hybrid`, `onsite`), and `135+` JD tech-stack hiring signals across **Ashby, Greenhouse, Lever, SmartRecruiters, Workday, and BambooHR** from any company domain or work email.
 
-### Job Freshness Buckets & CRM Board Match Confidence (`v1.1`)
-- **Filter out ghost-job boards:** Every job record emits `postedDaysAgo` and `freshnessStatus` (`active_7d` | `recent_30d` | `aged_90d` | `stale` | `unknown`), and every company summary (`summaryMode: true` / `/screen`) aggregates `freshJobs7d`, `freshJobs30d`, `newestJobDaysAgo`, and `hiringActivityStatus`.
-- **CRM board match confidence:** Company summaries expose `boardDetectedVia`, `boardMatchConfidence` (`high` | `medium` | `none`), and `boardMatchScore` (`0.00–1.00`) so Clay/HubSpot pipelines know whether a board came from an explicit URL / career-page embed (`0.96–1.00`) vs. an inferred slug probe (`0.82–0.88`).
+### Job Freshness Buckets, Workday Upper-Bound Hardening & Truncation Transparency (`v1.1.4`)
+- **Filter out ghost-job boards:** Every job record emits `postedDaysAgo`, `freshnessStatus` (`active_7d` | `recent_30d` | `aged_30plus` | `aged_90d` | `stale` | `unknown`), and a deterministic `jobFingerprint` (16-hex SHA-256 of `company|title|dept|location`) so longitudinal pipelines can flag bumped/republished reqs even when `publishedAt` resets.
+- **Workday dedupe & `30+` date hardening:** Keys primarily on `externalPath` (preserving multi-location/repost suffixes like `JR2030393-1`), stores digit-validated `bulletFields` separately as `requisitionId` (rejecting non-ID strings like `"Full time"`), and keeps `"Posted 30+ Days Ago"` in `postedAtUpperBound` / `postedDateIsUpperBound: true` (`aged_30plus`) so evergreen roles never pollute `freshJobs30d`.
+- **Summary denominator & truncation transparency:** Company summaries (`summaryMode: true` / `/screen`) expose `boardTotalJobs`, `isTruncated`, `salaryCoveragePct`, `freshJobs7d`, `freshJobs30d`, `newestJobDaysAgo`, `hiringActivityStatus`, and `boardMatchConfidence` (`high` | `medium` | `none`, `0.00–1.00`).
 
 ## Access Channels
 
